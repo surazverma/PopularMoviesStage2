@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@color/backgroundColor"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.android.popularmoviesstage2.preferences.FavouriteActivity">
+
+
+
+
+
+    <GridView
+        android:id="@+id/favourite_movie_grid_view"
+        android:scrollbars = "vertical"
+        android:numColumns="auto_fit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clipToPadding="false">
+
+    </GridView>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/movie_unavailable"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:text="@string/movie_unavailable_text"
+        android:textColor="#ffffff"
+        android:textSize="32sp"
+        android:fontFamily="sans-serif-condensed"
+        android:visibility="gone"
+        />
+
+    <ProgressBar
+        android:id="@+id/database_progress_circle"
+        android:layout_width="42dp"
+        android:layout_height="42dp"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center"
+        android:visibility="gone"/>
+
+
+
+</RelativeLayout>

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:background="#616161"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/author_label"
+            android:layout_margin="4dp"
+            android:textSize="18sp"
+            android:textColor="#fff"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/review_author_sample"
+        android:textSize="18sp"
+        android:textColor="#BDBDBD"
+        android:textAllCaps="true"
+        android:layout_margin = "4dp"
+        android:fontFamily="sans-serif-condensed"
+        android:id="@+id/review_author_name"/>
+    </LinearLayout>
+    <TextView
+        android:id="@+id/review_body_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="4dp"
+        android:fontFamily="sans-serif-condensed"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:textColor="#fff"
+        android:text="@string/review_body_sample"
+        android:textSize="14sp"
+        android:textStyle="italic"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#9E9E9E"
+        android:layout_margin="4dp"
+        />
+</LinearLayout>

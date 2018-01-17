@@ -1,0 +1,36 @@
+<resources>
+    <string name="app_name">Popular Movies Stage 2</string>
+
+    <string name="offline_text">You\'re Offline</string>
+    <string name="action_sorting">Sort Order</string>
+
+    <string name="pref_sortOrder_label">Sort By</string>
+    <string name="pref_by_popular_label">Popular Movies</string>
+    <string name="pref_by_rating_label">Top Rated Movie</string>
+    <string name="menu_fav_title">Favourites</string>
+    <string name="author_label">Author :-</string>
+
+    <string name="pref_sortOrder_key" translatable="false">sort by</string>
+    <string name="pref_by_popular_value" translatable="false">popular</string>
+    <string name="pref_by_rating_value" translatable="false">top_rated</string>
+
+    <string name="movie_unavailable_text">No Favourite Movies There</string>
+    <string name="review_body_sample">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum non mi vel augue gravida pretium. Cras vel molestie libero. Proin vitae libero quis odio efficitur consequat non eget sapien. Nunc finibus rutrum turpis, id tempus magna ullamcorper a. Praesent sit amet accumsan nulla. Suspendisse rutrum odio vel orci sollicitudin, sed tempus felis blandit. Nullam et odio ut ante consectetur molestie. Cras at massa at lectus laoreet elementum quis sit amet dolor. Mauris maximus tempor justo at commodo. Aenean porta nulla a dignissim pretium. Aenean rutrum, nunc et ultrices vestibulum, ante massa malesuada ante, et dapibus massa nisl vitae ligula. Nam volutpat, urna et lacinia varius, sapien elit pharetra enim, non interdum dui ipsum pulvinar odio. Pellentesque mi quam, convallis quis metus sed, bibendum feugiat magna.</string>
+    <string name="review_author_sample">Author"\'"s Name</string>
+    <string name="trailer_label">Trailer/Videos</string>
+    <string name="no_trailer_text">No Trailers Available</string>
+    <string name="review_label">Reviews</string>
+    <string name="no_reviews_text">No Reviews yet</string>
+
+
+    <string name="movie_title">MOVIE TITLE</string>
+    <string name="user_rating">User Rating</string>
+    <string name="default_rating_value">8.9</string>
+    <string name="release_date_label">Release date</string>
+    <string name="default_release_date">20 DEC 2017</string>
+    <string name="plot_synopsis_label">Plot Synopsis</string>
+    <string name="movie_poster_desc">This is the movie poster</string>
+
+    <string name="default_plot_synopsis">When was the last time you checked your watch?</string>
+
+</resources>
