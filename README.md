@@ -13,7 +13,7 @@ All the previous feature from the stage 1 of the app is added to this applicatio
 ## API Used
 To fetch the information regarding the movie [The Movie Database](https://www.themoviedb.org/documentation/api) API has been used.
 
-For stage one the data retrieved from the api is:
+For stage two the data retrieved from the api is:
 * Movie Poster Link
 * Plot Synopsis
 * Release Date
