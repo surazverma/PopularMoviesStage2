@@ -51,11 +51,11 @@ public class MovieDetails extends AppCompatActivity implements LoaderCallbacks<A
         setContentView(R.layout.activity_movie_details);
 
 
-        TextView mMovieTitle = (TextView) findViewById(R.id.current_movie_title);
-        ImageView mMoviePoster = (ImageView) findViewById(R.id.current_movie_poster_image);
-        TextView mPlotSynopsis = (TextView) findViewById(R.id.current_movie_plot_synopsis);
-        TextView mReleaseDate = (TextView) findViewById(R.id.current_movie_release_date);
-        TextView mUserRating = (TextView) findViewById(R.id.current_movie_rating);
+        TextView mMovieTitle =  findViewById(R.id.current_movie_title);
+        ImageView mMoviePoster =  findViewById(R.id.current_movie_poster_image);
+        TextView mPlotSynopsis = findViewById(R.id.current_movie_plot_synopsis);
+        TextView mReleaseDate = findViewById(R.id.current_movie_release_date);
+        TextView mUserRating = findViewById(R.id.current_movie_rating);
 
         Bundle incomingBundle = getIntent().getExtras();
         if (incomingBundle != null){
@@ -73,7 +73,7 @@ public class MovieDetails extends AppCompatActivity implements LoaderCallbacks<A
         final String releaseDate = movie.getReleaseDate();
         final double userRating = movie.getUserRating();
 
-        setTitle(movie.getMovieTitle());
+        setTitle(movieTitle);
         Picasso.with(getApplicationContext())
                 .load(IMAGE_BASE_URL+posterSize+posterPath)
                 .into(mMoviePoster);
@@ -82,6 +82,7 @@ public class MovieDetails extends AppCompatActivity implements LoaderCallbacks<A
 
         DateFormat inputDateFormat = new SimpleDateFormat("yyyy-MM-dd");
         DateFormat outputDateFormat = new SimpleDateFormat("dd-MM-yyyy");
+
         Date date = null;
         try {
             date = inputDateFormat.parse(releaseDate);

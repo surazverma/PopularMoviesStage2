@@ -27,7 +27,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MovieActivity" />
         </activity>
-        <activity android:name=".MovieDetails">
+        <activity
             android:name=".MovieDetails"
             android:label="Movie Info"
             android:parentActivityName=".MovieActivity">

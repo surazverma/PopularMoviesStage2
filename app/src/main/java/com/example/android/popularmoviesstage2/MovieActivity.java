@@ -21,13 +21,20 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.android.popularmoviesstage2.Retrofit.ApiClient;
+import com.example.android.popularmoviesstage2.Retrofit.ApiInterface;
 import com.example.android.popularmoviesstage2.preferences.FavouriteActivity;
 import com.example.android.popularmoviesstage2.preferences.SettingsActivity;
 
 import java.util.ArrayList;
 
-public class MovieActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<ArrayList<Movie>>,
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+public class MovieActivity extends AppCompatActivity implements
         SharedPreferences.OnSharedPreferenceChangeListener {
 
     private ProgressBar mLoadingIndicator;
@@ -38,6 +45,7 @@ public class MovieActivity extends AppCompatActivity implements LoaderManager.Lo
     private ImageAdapter imageAdapter;
     private TextView mOfflineTextView;
     private String sortOrder;
+    private ArrayList<Movie> moviesList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,17 +53,13 @@ public class MovieActivity extends AppCompatActivity implements LoaderManager.Lo
         setContentView(R.layout.activity_movie);
         setTitle("Popular Movies");
 
-        mLoadingIndicator = (ProgressBar) findViewById(R.id.loading_circle);
-        mOfflineTextView = (TextView) findViewById(R.id.internet_connection_error_text);
+        mLoadingIndicator = findViewById(R.id.loading_circle);
+        mOfflineTextView =  findViewById(R.id.internet_connection_error_text);
         mOfflineTextView.setVisibility(View.GONE);
         setupSharedPreferences();
 
-
-
-
         ConnectivityManager check = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = check.getActiveNetworkInfo();
-
 
         if(networkInfo != null && networkInfo.isConnectedOrConnecting()){
             initViews();
@@ -63,7 +67,9 @@ public class MovieActivity extends AppCompatActivity implements LoaderManager.Lo
             mOfflineTextView.setVisibility(View.VISIBLE);
         }
     }
+
     private void initViews(){
+
         moviesRecyclerView = (RecyclerView) findViewById(R.id.poster_recycler_view);
         moviesRecyclerView.setHasFixedSize(true);
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getApplicationContext(),2);
@@ -73,9 +79,44 @@ public class MovieActivity extends AppCompatActivity implements LoaderManager.Lo
         }else{
             moviesRecyclerView.setLayoutManager(layoutManager);}
 
+        ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
 
-        LoaderManager loaderManager = getSupportLoaderManager();
-        loaderManager.initLoader(MOVIE_LOADER_ID,null,this);
+        Call<MovieResponse> callPopular = apiService.getPopularMovies(API_KEY);
+        Call<MovieResponse> callTopRated = apiService.getTopRatedMovies(API_KEY);
+        if(sortOrder.equals(getString(R.string.pref_by_popular_value))){
+            callPopular.enqueue(new Callback<MovieResponse>() {
+                @Override
+                public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
+                    moviesList = response.body().getResults();
+                    imageAdapter = new ImageAdapter(MovieActivity.this,moviesList);
+                    moviesRecyclerView.setAdapter(imageAdapter);
+                }
+
+                @Override
+                public void onFailure(Call<MovieResponse> call, Throwable t) {
+                    Toast.makeText(MovieActivity.this, "Network Error", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }else {
+            callTopRated.enqueue(new Callback<MovieResponse>() {
+                @Override
+                public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
+                    moviesList = response.body().getResults();
+                    imageAdapter = new ImageAdapter(MovieActivity.this,moviesList);
+                    moviesRecyclerView.setAdapter(imageAdapter);
+                }
+
+                @Override
+                public void onFailure(Call<MovieResponse> call, Throwable t) {
+                    Toast.makeText(MovieActivity.this, "Network Error", Toast.LENGTH_SHORT).show();
+
+                }
+            });
+        }
+
+
+//        LoaderManager loaderManager = getSupportLoaderManager();
+//        loaderManager.initLoader(MOVIE_LOADER_ID,null,this);
     }
     private void setupSharedPreferences(){
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
@@ -88,53 +129,53 @@ public class MovieActivity extends AppCompatActivity implements LoaderManager.Lo
                 ,getString(R.string.pref_by_popular_value));
     }
 
-    @Override
-    public Loader<ArrayList<Movie>> onCreateLoader(int id, Bundle args) {
-
-
-        Uri baseUri = Uri.parse(TMDB_BASE_URL);
-        Uri.Builder uriBuilder = baseUri.buildUpon();
-        uriBuilder.appendPath(sortOrder);
-        uriBuilder.appendQueryParameter("api_key",API_KEY);
-        final String finalUrl = uriBuilder.toString();
-
-
-
-        return new AsyncTaskLoader<ArrayList<Movie>>(this) {
-            @Override
-            protected void onStartLoading() {
-                super.onStartLoading();
-                mLoadingIndicator.setVisibility(View.VISIBLE);
-                forceLoad();
-            }
-
-            @Override
-            public ArrayList<Movie> loadInBackground() {
-                if (finalUrl==null){
-                    return null;
-                }
-
-                return NetworkUtils.fetchMovieData(finalUrl);
-            }
-        };
-    }
-
-    @Override
-    public void onLoadFinished(Loader<ArrayList<Movie>> loader, ArrayList<Movie> data) {
-        mLoadingIndicator = (ProgressBar) findViewById(R.id.loading_circle);
-        mLoadingIndicator.setVisibility(View.INVISIBLE);
-
-        if(data != null && !data.isEmpty()){
-            imageAdapter = new ImageAdapter(this,data);
-            moviesRecyclerView.setAdapter(imageAdapter);
-        }
-
-    }
-
-    @Override
-    public void onLoaderReset(Loader<ArrayList<Movie>> loader) {
-
-    }
+//    @Override
+//    public Loader<ArrayList<Movie>> onCreateLoader(int id, Bundle args) {
+//
+//
+//        Uri baseUri = Uri.parse(TMDB_BASE_URL);
+//        Uri.Builder uriBuilder = baseUri.buildUpon();
+//        uriBuilder.appendPath(sortOrder);
+//        uriBuilder.appendQueryParameter("api_key",API_KEY);
+//        final String finalUrl = uriBuilder.toString();
+//
+//
+//
+//        return new AsyncTaskLoader<ArrayList<Movie>>(this) {
+//            @Override
+//            protected void onStartLoading() {
+//                super.onStartLoading();
+//                mLoadingIndicator.setVisibility(View.VISIBLE);
+//                forceLoad();
+//            }
+//
+//            @Override
+//            public ArrayList<Movie> loadInBackground() {
+//                if (finalUrl==null){
+//                    return null;
+//                }
+//
+//                return NetworkUtils.fetchMovieData(finalUrl);
+//            }
+//        };
+//    }
+//
+//    @Override
+//    public void onLoadFinished(Loader<ArrayList<Movie>> loader, ArrayList<Movie> data) {
+//        mLoadingIndicator = (ProgressBar) findViewById(R.id.loading_circle);
+//        mLoadingIndicator.setVisibility(View.INVISIBLE);
+//
+//        if(data != null && !data.isEmpty()){
+//            imageAdapter = new ImageAdapter(this,data);
+//            moviesRecyclerView.setAdapter(imageAdapter);
+//        }
+//
+//    }
+//
+//    @Override
+//    public void onLoaderReset(Loader<ArrayList<Movie>> loader) {
+//
+//    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -162,6 +203,7 @@ public class MovieActivity extends AppCompatActivity implements LoaderManager.Lo
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         if (key.equals(getString(R.string.pref_sortOrder_key))){
             loadMoviePreferences(sharedPreferences);
+            initViews();
         }
     }
 

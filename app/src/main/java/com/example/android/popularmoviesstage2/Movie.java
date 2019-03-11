@@ -3,16 +3,29 @@ package com.example.android.popularmoviesstage2;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Created by Suraz Verma on 12/30/2017.
  */
 
 public class Movie implements Parcelable {
+    @SerializedName("original_title")
     private String mMovieTitle;
+
+    @SerializedName("poster_path")
     private String mPosterPath;
+
+    @SerializedName("overview")
     private String mPlotSynopsis;
+
+    @SerializedName("vote_average")
     private double mUserRating;
+
+    @SerializedName("release_date")
     private String mReleaseDate;
+
+    @SerializedName("id")
     private int mMovieId;
 
 
