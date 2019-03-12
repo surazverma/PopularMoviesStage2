@@ -1,12 +1,19 @@
 package com.example.android.popularmoviesstage2;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Created by Suraz Verma on 1/14/2018.
  */
 
 public class VideoData {
+    @SerializedName("key")
     private String mVideoKey;
+
+    @SerializedName("type")
     private String mVideoType;
+
+    @SerializedName("name")
     private String mVideoName;
 
 

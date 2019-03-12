@@ -2,6 +2,9 @@ package com.example.android.popularmoviesstage2.Retrofit;
 
 import com.example.android.popularmoviesstage2.Movie;
 import com.example.android.popularmoviesstage2.MovieResponse;
+import com.example.android.popularmoviesstage2.ReviewResponse;
+import com.example.android.popularmoviesstage2.VideoData;
+import com.example.android.popularmoviesstage2.VideoResponse;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
@@ -18,6 +21,10 @@ public interface ApiInterface {
     @GET("movie/{id}")
     Call<MovieResponse> getMovieDetails(@Path("id") int id, @Query("api_key") String apiKey);
 
+    @GET("movie/{id}/videos")
+    Call<VideoResponse> getVideoData(@Path("id") int id, @Query("api_key") String apiKey);
 
+    @GET("movie/{id}/reviews")
+    Call<ReviewResponse> getReviewData(@Path("id") int id, @Query("api_key") String apiKey);
 
 }
