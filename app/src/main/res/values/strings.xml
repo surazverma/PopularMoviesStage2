@@ -32,5 +32,6 @@
     <string name="movie_poster_desc">This is the movie poster</string>
 
     <string name="default_plot_synopsis">When was the last time you checked your watch?</string>
+    <string name="network_issue">Network Issue Please try later</string>
 
 </resources>

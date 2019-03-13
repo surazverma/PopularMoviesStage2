@@ -62,6 +62,7 @@ public class MovieActivity extends AppCompatActivity implements
         NetworkInfo networkInfo = check.getActiveNetworkInfo();
 
         if(networkInfo != null && networkInfo.isConnectedOrConnecting()){
+            mLoadingIndicator.setVisibility(View.VISIBLE);
             initViews();
         } else{
             mOfflineTextView.setVisibility(View.VISIBLE);
@@ -87,6 +88,7 @@ public class MovieActivity extends AppCompatActivity implements
             callPopular.enqueue(new Callback<MovieResponse>() {
                 @Override
                 public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
+                    mLoadingIndicator.setVisibility(View.GONE);
                     moviesList = response.body().getResults();
                     imageAdapter = new ImageAdapter(MovieActivity.this,moviesList);
                     moviesRecyclerView.setAdapter(imageAdapter);
@@ -101,6 +103,7 @@ public class MovieActivity extends AppCompatActivity implements
             callTopRated.enqueue(new Callback<MovieResponse>() {
                 @Override
                 public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
+                    mLoadingIndicator.setVisibility(View.GONE);
                     moviesList = response.body().getResults();
                     imageAdapter = new ImageAdapter(MovieActivity.this,moviesList);
                     moviesRecyclerView.setAdapter(imageAdapter);
@@ -114,9 +117,6 @@ public class MovieActivity extends AppCompatActivity implements
             });
         }
 
-
-//        LoaderManager loaderManager = getSupportLoaderManager();
-//        loaderManager.initLoader(MOVIE_LOADER_ID,null,this);
     }
     private void setupSharedPreferences(){
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
@@ -129,53 +129,6 @@ public class MovieActivity extends AppCompatActivity implements
                 ,getString(R.string.pref_by_popular_value));
     }
 
-//    @Override
-//    public Loader<ArrayList<Movie>> onCreateLoader(int id, Bundle args) {
-//
-//
-//        Uri baseUri = Uri.parse(TMDB_BASE_URL);
-//        Uri.Builder uriBuilder = baseUri.buildUpon();
-//        uriBuilder.appendPath(sortOrder);
-//        uriBuilder.appendQueryParameter("api_key",API_KEY);
-//        final String finalUrl = uriBuilder.toString();
-//
-//
-//
-//        return new AsyncTaskLoader<ArrayList<Movie>>(this) {
-//            @Override
-//            protected void onStartLoading() {
-//                super.onStartLoading();
-//                mLoadingIndicator.setVisibility(View.VISIBLE);
-//                forceLoad();
-//            }
-//
-//            @Override
-//            public ArrayList<Movie> loadInBackground() {
-//                if (finalUrl==null){
-//                    return null;
-//                }
-//
-//                return NetworkUtils.fetchMovieData(finalUrl);
-//            }
-//        };
-//    }
-//
-//    @Override
-//    public void onLoadFinished(Loader<ArrayList<Movie>> loader, ArrayList<Movie> data) {
-//        mLoadingIndicator = (ProgressBar) findViewById(R.id.loading_circle);
-//        mLoadingIndicator.setVisibility(View.INVISIBLE);
-//
-//        if(data != null && !data.isEmpty()){
-//            imageAdapter = new ImageAdapter(this,data);
-//            moviesRecyclerView.setAdapter(imageAdapter);
-//        }
-//
-//    }
-//
-//    @Override
-//    public void onLoaderReset(Loader<ArrayList<Movie>> loader) {
-//
-//    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

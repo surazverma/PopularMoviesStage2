@@ -1,7 +1,6 @@
 package com.example.android.popularmoviesstage2;
 
 import android.content.ContentValues;
-import android.content.Context;
 import android.database.Cursor;
 import android.icu.text.DateFormat;
 import android.icu.text.SimpleDateFormat;
@@ -10,10 +9,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.app.LoaderManager.LoaderCallbacks;
-import android.support.v4.content.AsyncTaskLoader;
-import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -38,7 +33,7 @@ import retrofit2.Response;
 public class MovieDetails extends AppCompatActivity  {
     private static final String TMDB_BASE_URL = "https://api.themoviedb.org/3/movie/";
     private static final String API_KEY = "";  //Please Enter API_KEY.
-    private static final int TRAILER_LOADER_ID = 122;
+
     private Movie movie;
     private static final String IMAGE_BASE_URL = "https://image.tmdb.org/t/p/";
     private final String posterSize = "w342";
@@ -55,6 +50,9 @@ public class MovieDetails extends AppCompatActivity  {
     private String plotSynopsis ;
     private String releaseDate ;
     private double userRating ;
+    private TextView emptyReviewText;
+    private TextView emptyTrailerText;
+
 
 
 
@@ -73,7 +71,8 @@ public class MovieDetails extends AppCompatActivity  {
         TextView mUserRating = findViewById(R.id.current_movie_rating);
 
 
-
+        emptyReviewText = findViewById(R.id.no_reviews_text);
+        emptyTrailerText = findViewById(R.id.no_trailer_text);
 
 
         Bundle incomingBundle = getIntent().getExtras();
@@ -117,12 +116,6 @@ public class MovieDetails extends AppCompatActivity  {
 
         final String currentMovieID = Integer.toString(movieID);
 
-
-//        ReviewLoader reviewLoader = new ReviewLoader(this,currentMovieID);
-//        reviewLoader.initReviewView();
-
-
-
         final FloatingActionButton favouriteFab = (FloatingActionButton) findViewById(R.id.floating_action_button);
         favourite  = isMovieInDatabase(movieID);
         if(favourite){
@@ -162,22 +155,28 @@ public class MovieDetails extends AppCompatActivity  {
         videoResponseCall.enqueue(new Callback<VideoResponse>() {
             @Override
             public void onResponse(Call<VideoResponse> call, Response<VideoResponse> response) {
-                videoResponse = response.body();
-                videoData = videoResponse.getResults();
-                VideoAdapter videoAdapter = new VideoAdapter(MovieDetails.this,videoData);
-                trailerRecyclerView.setAdapter(videoAdapter);
+               if (response.body()!=null){
+                   videoResponse = response.body();
+                   videoData = videoResponse.getResults();
+                   VideoAdapter videoAdapter = new VideoAdapter(MovieDetails.this,videoData);
+                   trailerRecyclerView.setAdapter(videoAdapter);
+               } else{
+
+                   emptyTrailerText.setVisibility(View.VISIBLE);
+                   trailerRecyclerView.setVisibility(View.GONE);
+               }
+
             }
 
             @Override
             public void onFailure(Call<VideoResponse> call, Throwable t) {
-                //TODO: Replace with actual error handling.
-                Toast.makeText(MovieDetails.this, "Still error check throwable", Toast.LENGTH_SHORT).show();
+
+                emptyTrailerText.setText(getString(R.string.network_issue));
+                emptyTrailerText.setVisibility(View.VISIBLE);
+                trailerRecyclerView.setVisibility(View.GONE);
             }
         });
 
-
-//        LoaderManager loaderManager = getSupportLoaderManager();
-//        loaderManager.initLoader(TRAILER_LOADER_ID,null,this);
     }
 
     private void initReviewView(){
@@ -192,16 +191,23 @@ public class MovieDetails extends AppCompatActivity  {
         reviewResponseCall.enqueue(new Callback<ReviewResponse>() {
             @Override
             public void onResponse(Call<ReviewResponse> call, Response<ReviewResponse> response) {
-                reviewResponse = response.body();
-                reviewData = reviewResponse.getResults();
-                ReviewAdapter reviewAdapter = new ReviewAdapter(MovieDetails.this,reviewData);
-                reviewRecyclerView.setAdapter(reviewAdapter);
+                if (response.body()!=null){
+                    reviewResponse = response.body();
+                    reviewData = reviewResponse.getResults();
+                    ReviewAdapter reviewAdapter = new ReviewAdapter(MovieDetails.this,reviewData);
+                    reviewRecyclerView.setAdapter(reviewAdapter);
+                }else{
+                    emptyReviewText.setVisibility(View.VISIBLE);
+                    reviewRecyclerView.setVisibility(View.GONE);
+                }
+
             }
 
             @Override
             public void onFailure(Call<ReviewResponse> call, Throwable t) {
-                //TODO Error Handling
-                Toast.makeText(MovieDetails.this, "Review Error", Toast.LENGTH_SHORT).show();
+                emptyReviewText.setVisibility(View.VISIBLE);
+                reviewRecyclerView.setVisibility(View.GONE);
+                emptyReviewText.setText(getString(R.string.network_issue));
             }
         });
 
@@ -243,125 +249,5 @@ public class MovieDetails extends AppCompatActivity  {
         return false;
     }
 
-
-
-
-
-//    @Override
-//    public Loader<ArrayList<VideoData>> onCreateLoader(int id, Bundle args) {
-//        final String currentMovieID = Integer.toString(movie.getMovieId());
-//        Uri baseUri = Uri.parse(TMDB_BASE_URL);
-//        Uri.Builder uriBuilder = baseUri.buildUpon();
-//        uriBuilder.appendPath(currentMovieID);
-//        uriBuilder.appendPath("videos");
-//        uriBuilder.appendQueryParameter("api_key",API_KEY);
-//
-//        final String finalURL = uriBuilder.toString();
-//        return new AsyncTaskLoader<ArrayList<VideoData>>(this) {
-//            @Override
-//            protected void onStartLoading() {
-//                super.onStartLoading();
-//                forceLoad();
-//            }
-//
-//            @Override
-//            public ArrayList<VideoData> loadInBackground() {
-//                if (finalURL == null){
-//                    return null;
-//                }
-//                return NetworkUtils.fetchTrailerData(finalURL);
-//            }
-//        };
-//
-//    }
-//
-//    @Override
-//    public void onLoadFinished(Loader<ArrayList<VideoData>> loader, ArrayList<VideoData> data) {
-//
-//        if (data!=null && !data.isEmpty()){
-//            VideoAdapter videoAdapter = new VideoAdapter(this,data);
-//        trailerRecyclerView.setAdapter(videoAdapter);}
-//        else {
-//            TextView emptyView = findViewById(R.id.no_trailer_text);
-//            emptyView.setVisibility(View.VISIBLE);
-//            trailerRecyclerView.setVisibility(View.GONE);
-//        }
-//    }
-//
-//    @Override
-//    public void onLoaderReset(Loader<ArrayList<VideoData>> loader) {
-//
-//    }
-//
-//    public class ReviewLoader implements LoaderManager.LoaderCallbacks<ArrayList<ReviewData>> {
-//
-//        private static final int REVIEW_LOADER_ID = 121;
-//        private static final String TMDB_BASE_URL = "https://api.themoviedb.org/3/movie/";
-//        private static final String API_KEY = "";  //Please Enter API_KEY.
-//        private Context LContext;
-//        private String  movieID;
-//
-//        private RecyclerView reviewRecyclerView;
-//        private ReviewLoader(Context rContext,String movieID){
-//            this.LContext = rContext;
-//            this.movieID = movieID;
-//        }
-//
-//
-//
-//
-//        public void initReviewView(){
-//            reviewRecyclerView = (RecyclerView) findViewById(R.id.review_recycler_view);
-//            RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(LContext);
-//            reviewRecyclerView.setLayoutManager(layoutManager);
-//            LoaderManager loaderManager = getSupportLoaderManager();
-//            loaderManager.initLoader(REVIEW_LOADER_ID,null,this);
-//        }
-//
-//
-
-//        @Override
-//        public Loader<ArrayList<ReviewData>> onCreateLoader(int id, Bundle args) {
-//            Uri baseUri = Uri.parse(TMDB_BASE_URL);
-//            Uri.Builder uriBuilder = baseUri.buildUpon();
-//            uriBuilder.appendPath(movieID);
-//            uriBuilder.appendPath("reviews");
-//            uriBuilder.appendQueryParameter("api_key",API_KEY);
-//            final String finalURL = uriBuilder.toString();
-//
-//            return new AsyncTaskLoader<ArrayList<ReviewData>>(LContext) {
-//                @Override
-//                protected void onStartLoading() {
-//                    super.onStartLoading();
-//                    forceLoad();
-//                }
-//
-//                @Override
-//                public ArrayList<ReviewData> loadInBackground() {
-//                    if (finalURL == null){
-//                        return null;
-//                    }
-//                    return NetworkUtils.fetchReviewData(finalURL);
-//                }
-//            };
-//        }
-//
-//        @Override
-//        public void onLoadFinished(Loader<ArrayList<ReviewData>> loader, ArrayList<ReviewData> data) {
-//            if (data!=null && !data.isEmpty()){
-//                ReviewAdapter reviewAdapter = new ReviewAdapter(LContext,data);
-//                reviewRecyclerView.setAdapter(reviewAdapter);
-//            }else{
-//                TextView emptyView = (TextView)findViewById(R.id.no_reviews_text);
-//                emptyView.setVisibility(View.VISIBLE);
-//                reviewRecyclerView.setVisibility(View.GONE);
-//            }
-//        }
-//
-//        @Override
-//        public void onLoaderReset(Loader<ArrayList<ReviewData>> loader) {
-//
-//        }
-//    }
 }
 
